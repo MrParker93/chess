@@ -26,23 +26,23 @@ class TestBoard:
 
     def test_board_changes_turn_after_move(self, board):
         assert board.whites_move == True
-        board.move((0, 0), (0, 0))
+        board.move((0, 0), (0, 0), board.board)
         assert board.whites_move == False
 
     def test_board_moves_piece_after_move(self, board):
         board.setup()
         assert board.board[6][0] == "wP"
-        board.move((0, 6), (0, 5))
+        board.move((0, 6), (0, 5), board.board)
         assert board.board[6][0] == ""
         assert board.board[5][0] == "wP"
 
     def test_board_moves_piece_only_if_space_is_empty(self, board):
         board.setup()
         board.board[5][0] = "wP"
-        board.move((0, 6), (0, 5))
+        board.move((0, 6), (0, 5), board.board)
         assert board.board[6][0] == "wP"
         assert board.board[5][0] == "wP"
-        board.move((0, 6), (0, 4))
+        board.move((0, 6), (0, 4), board.board)
         assert board.board[6][0] == ""
         assert board.board[4][0] == "wP"
 
@@ -50,17 +50,17 @@ class TestBoard:
     def test_board_moves_pieces_to_capture_enemy_pieces(self, board):
         board.setup()
         board.board[5][0] = "wP"
-        board.move((1, 6), (0, 5))
+        board.move((1, 6), (0, 5), board.board)
         assert board.board[6][1] == "wP"
         assert board.board[5][0] == "wP"
         board.board[5][0] = "bP"
-        board.move((1, 6), (0, 5))
+        board.move((1, 6), (0, 5), board.board)
         assert board.board[6][1] == ""
         assert board.board[5][0] == "wP"
 
     def test_each_move_is_logged(self, board):
         board.setup()
-        board.move((1, 6), (1, 5))
+        board.move((1, 6), (1, 5), board.board)
         assert board.board[6][1] == ""
         assert board.board[5][1] == "wP"
         assert len(board.history) == 1
@@ -69,7 +69,7 @@ class TestBoard:
 
     def test_a_move_can_be_undone_with_undo_move(self, board):
         board.setup()
-        board.move((1, 6), (1, 5))
+        board.move((1, 6), (1, 5), board.board)
         assert board.board[6][1] == ""
-        board.undo()
+        board.undo(board.board)
         assert board.board[6][1] == "wP"
