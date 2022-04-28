@@ -4,20 +4,20 @@ from piece import Piece
 
 
 def coordinates_to_board(piece_x: int, piece_y: int) -> tuple[int, int]:
-    board_x = piece_x * GRIDSIZE + OFFSET_X
-    board_y = piece_y * GRIDSIZE + OFFSET_Y
-    return (board_x, board_y)
+    board_x = (piece_x - OFFSET_X) // GRIDSIZE
+    board_y = (piece_y - OFFSET_Y) // GRIDSIZE
+    return (abs(board_x), abs(board_y))
 
 
 def board_to_coordinates(board_x: int, board_y: int) -> tuple[int, int]:
-    piece_x = (board_x - OFFSET_X) // GRIDSIZE
-    piece_y = (board_y - OFFSET_Y) // GRIDSIZE
-    return (abs(piece_x), abs(piece_y))
+    piece_x = board_x * GRIDSIZE + OFFSET_X
+    piece_y = board_y * GRIDSIZE + OFFSET_Y
+    return (piece_x, piece_y)
 
-
+    
 def mouse_position(pieces: list[Piece]) -> Piece | None:
     for piece in pieces:
-        if board_to_coordinates(pyxel.mouse_x, pyxel.mouse_y) == board_to_coordinates(
+        if coordinates_to_board(pyxel.mouse_x, pyxel.mouse_y) == coordinates_to_board(
             piece.x, piece.y
         ):
             return piece
