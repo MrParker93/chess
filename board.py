@@ -1,7 +1,7 @@
+import numpy as np
+from piece import Piece
 from collections import namedtuple
 
-from numpy import isin
-from piece import Piece
 
 Coordinates = namedtuple("Coordinates", ["x", "y"])
 
@@ -14,6 +14,7 @@ History = namedtuple(
 
 class Board:
     def __init__(self) -> None:
+        # self.board = np.full(shape=(8, 8), fill_value="", dtype="U256")
         self.board = [["" for _ in range(8)] for _ in range(8)]
         self.history = []
         self.whites_move = True
@@ -59,7 +60,7 @@ class Board:
         """
         board[position[1]][position[0]] = ""
 
-    def add_piece(self, piece: str, position: tuple[int, int], board: list[list]) -> None:
+    def add_piece(self, piece: Piece, position: tuple[int, int], board: list[list]) -> None:
         """
         Adds the piece passed as a parameter to the given position on the board.
         """
@@ -80,11 +81,9 @@ class Board:
         if self.is_empty(destination, board):
             return True
         elif piece[0] != board[destination[1]][destination[0]][0]:
-            print("CAPTURE")
             self.remove_piece(destination, board)
             return True
         elif piece[0] == board[destination[1]][destination[0]][0]:
-            print("ALLY PIECE")
             return False
 
     def check_diagonals(self, position: Coordinates[int, int], board: list[list]) -> str | None:
@@ -141,8 +140,33 @@ class Board:
                         return "RIGHT"
         return None
 
-
-
+    def check_castling(self, position: Coordinates[int, int], board: list[list], pieces: list[Piece]) -> str | None:
+        """
+        Checks the spaces to the left and right of the King piece and Rook piece are empty and neither piece have
+        made a first move to ensure conditions are met for castling to be performed.
+        """
+        current_piece = board[position.y][position.x]
+        # TODO: Check for instance of King or Rook class BEFORE calling this function in chess.py
+        if current_piece.endswith("R") and position.x == 7:
+            for piece in pieces:
+                if (position.x - 3, position.y) == piece.get_position() and not piece.has_moved:
+                    if self.is_empty((position.x - 1, position.y), board) and self.is_empty((position.x - 2, position.y), board):
+                        return "KINGSIDE"
+        elif current_piece.endswith("R") and position.x == 0:
+            for piece in pieces:
+                if (position.x + 4, position.y) == piece.get_position() and not piece.has_moved:
+                    if self.is_empty((position.x + 1, position.y), board) and self.is_empty((position.x + 2, position.y), board) and self.is_empty((position.x + 3, position.y), board):
+                        return "QUEENSIDE"
+        elif current_piece.endswith("K"):
+            for piece in pieces:
+                if (position.x + 3, position.y) == piece.get_position() and not piece.has_moved:
+                    if self.is_empty((position.x + 1, position.y), board) and self.is_empty((position.x + 2, position.y), board):
+                        return "KINGSIDE"
+                elif (position.x - 4, position.y) == piece.get_position() and not piece.has_moved:
+                    if self.is_empty((position.x - 1, position.y), board) and self.is_empty((position.x - 2, position.y), board) and self.is_empty((position.x - 3, position.y), board):
+                        return "QUEENSIDE"
+        return None
+                
     def undo(self, board: list[list]) -> None:
         """
         Undo the previous move made by the player.

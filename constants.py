@@ -1,3 +1,6 @@
+SQUARESIZE = 16
+OFFSET = 8
+
 WHITE_PIECES = {
     "pawn": "wP",
     "rook": "wR",
@@ -31,5 +34,11 @@ PAWN_CAPTURES = {
     "bLEFT": (-1, 1),
     "bBOTH": [(1, 1), (-1, 1)]
 }
+
+CASTLING = {
+    "KINGSIDE": [(2, 0), (-2, 0)],
+    "QUEENSIDE": [(-2, 0), (3, 0)]
+}
+
 RANKS = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
 FILES = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}

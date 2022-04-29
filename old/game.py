@@ -1,20 +1,22 @@
 import pyxel
-import chess
+from chess import Chess
 
-pyxel.init(width=144, height=144, title="Retro Chess")
-pyxel.load("assets/chess.pyxres")
-pyxel.mouse(True)
-c = chess.Chess()
+def main():
+    pyxel.init(width=144, height=144, title="Retro Chess")
+    pyxel.load("assets/chess.pyxres")
+    pyxel.mouse(True)
+    c = Chess()
+
+    def update():
+        if pyxel.btn(pyxel.KEY_Q):
+            pyxel.quit()
+        c.update()
+
+    def draw():
+        c.draw()
+
+    pyxel.run(update, draw)
 
 
-def update():
-    if pyxel.btn(pyxel.KEY_Q):
-        pyxel.quit()
-
-    c.update()
-
-
-def draw():
-    c.draw()
-
-pyxel.run(update, draw)
+if __name__ == "__main__":
+    main()
